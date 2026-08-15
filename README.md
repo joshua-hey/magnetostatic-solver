@@ -15,6 +15,12 @@ $$
 * Magnetic field and vector potential visualization
 * Ampère's law validation over multiple contours
 
+## Numerical Solution
+
+![Numerical magnetostatic solution](figures/numerical_solution.png)
+
+Magnetic flux density and magnetic vector potential calculated by the finite-difference solver.
+
 ## Validation
 
 Ampère's law is checked by numerically evaluating
@@ -24,6 +30,10 @@ $$
 $$
 
 around circular contours surrounding each conductor.
+
+![Ampere's law validation](figures/ampere_validation.png)
+
+Ampère's law error across several integration contour radii.
 
 ## Running the Code
 
