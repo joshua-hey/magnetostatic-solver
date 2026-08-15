@@ -27,4 +27,4 @@ around circular contours surrounding each conductor.
 
 ## Running the Code
 
-Run `magnetostatic_solver.m` in MATLAB. The script generates field plots and prints validation results to the command window.
+Run `magnetostatic_field_solver.m` in MATLAB. The script generates field plots and prints validation results to the command window.
