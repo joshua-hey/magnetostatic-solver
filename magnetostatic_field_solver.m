@@ -156,7 +156,8 @@ ylabel('y (m)')
 colorbar
 title('A_z')
 
-exportgraphics(gcf,'numerical_solution.png','Resolution',300)
+exportgraphics(gcf,'figures/numerical_solution.png','Resolution',300)
+
 %% Define circular conductors 
 radius = 0.005;
 x1 = 0.025;  y1 = 0.025; % center of +10 A conductor
@@ -387,4 +388,4 @@ title('Ampere''s Law Validation')
 legend('Conductor 1', 'Conductor 2', 'Location', 'best')
 grid on
 
-exportgraphics(gcf, 'ampere_validation.png', 'Resolution', 300)
+exportgraphics(gcf,'figures/ampere_validation.png','Resolution',300)
