@@ -109,46 +109,54 @@ Byq = By(1:step:end,1:step:end);
 dAz_dxq = dAz_dx(1:step:end,1:step:end);
 dAz_dyq = dAz_dy(1:step:end,1:step:end);
 
-%% Plotting
-figure('Position',[200 200 2000 1200]);
+%% Plot numerical solution
+figure('Position',[200 100 1100 850]);
+
+tiledlayout(2,2,'TileSpacing','compact','Padding','compact');
 
 % B vector field
-subplot(2,2,1)
+nexttile
 quiver(Xq,Yq,Bxq,Byq,'AutoScale','on','AutoScaleFactor',1)
 axis equal
 xlim([min(x) max(x)]);
 ylim([min(y) max(y)]);
-xlabel('x (m)'); ylabel('y (m)')
-title('B-Field Quiver Plot')
+xlabel('x (m)')
+ylabel('y (m)')
+title('B-Field Vectors')
 
-% |B|
-subplot(2,2,2)
+% B magnitude
+nexttile
 contourf(X,Y,Bmag,50,'LineColor','none')
-xlabel('x (m)'); ylabel('y (m)')
-axis equal
-%caxis([0, 0.3*max(Bmag(:))]) %emphasize midrange values
-colorbar
-title('B-Field Magnitude')
-
-% A_z gradient
-subplot(2,2,3)
-quiver(Xq, Yq, dAz_dxq, dAz_dyq, 'AutoScale','on','AutoScaleFactor',1)
 axis equal
 xlim([min(x) max(x)]);
 ylim([min(y) max(y)]);
-xlabel('x (m)'); ylabel('y (m)')
-title('A_z Gradient Quiver Plot')
-ax3 = gca;
-
-% |A_z|
-subplot(2,2,4)
-contourf(X,Y,Az,50)
-axis equal
-xlabel('x (m)'); ylabel('y (m)')
+xlabel('x (m)')
+ylabel('y (m)')
 colorbar
-title('A_z Magnitude')
-ax4 = gca;
+title('B-Field Magnitude')
 
+% Az gradient
+nexttile
+quiver(Xq,Yq,dAz_dxq,dAz_dyq,'AutoScale','on','AutoScaleFactor',1)
+axis equal
+xlim([min(x) max(x)]);
+ylim([min(y) max(y)]);
+xlabel('x (m)')
+ylabel('y (m)')
+title('Gradient of A_z')
+
+% Az
+nexttile
+contourf(X,Y,Az,50,'LineColor','none')
+axis equal
+xlim([min(x) max(x)]);
+ylim([min(y) max(y)]);
+xlabel('x (m)')
+ylabel('y (m)')
+colorbar
+title('A_z')
+
+exportgraphics(gcf,'numerical_solution.png','Resolution',300)
 %% Define circular conductors 
 radius = 0.005;
 x1 = 0.025;  y1 = 0.025; % center of +10 A conductor
@@ -360,19 +368,23 @@ fprintf('Mean error over all tests: %.5f %%\n', mean(results(:,5)));
 fprintf('Maximum error over all tests: %.5f %%\n', max(results(:,5)));
 fprintf('Minimum error over all tests: %.5f %%\n', min(results(:,5)));
 
-%% Check for radius dependence using highest contour resolution
+%% Plot Ampere's law validation
 Ntheta_final = max(Ntheta_values);
 
-fprintf('\n===== RADIUS DEPENDENCE AT Ntheta = %d =====\n', Ntheta_final);
+figure('Position',[200 200 700 500])
+hold on
 
 for c = 1:size(conductors,1)
+    rows = results(results(:,1) == c & ...
+                   results(:,2) == Ntheta_final, :);
 
-    rows = results(results(:,1) == c & results(:,2) == Ntheta_final, :);
-
-    fprintf('\nConductor %d\n', c);
-
-    for k = 1:size(rows,1)
-        fprintf('r = %5.1f mm: I = %+.7f A, error = %.5f %%\n', ...
-            rows(k,3)*1000, rows(k,4), rows(k,5));
-    end
+    plot(rows(:,3)*1000, rows(:,5), '-o')
 end
+
+xlabel('Contour Radius (mm)')
+ylabel('Ampere''s Law Error (%)')
+title('Ampere''s Law Validation')
+legend('Conductor 1', 'Conductor 2', 'Location', 'best')
+grid on
+
+exportgraphics(gcf, 'ampere_validation.png', 'Resolution', 300)
